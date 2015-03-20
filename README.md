@@ -24,9 +24,11 @@ dependencies {
 ### Application Module:
 ```java
 @Contribute(MinificationCacheWarming.class)
-public static void configureMinificationCacheWarming(final OrderedConfiguration<StackExtension> configuration) {
+public static void configureMinificationCacheWarming(
+    final OrderedConfiguration<StackExtension> configuration) {
   configuration.add("stack:core", StackExtension.stack("core"))
   configuration.add("module:bootstrap/modal", StackExtension.module("bootstrap/modal"))
-  configuration.add("stylesheet:tapestry.css", StackExtension.stylesheet('${tapestry.asset.root}/tapestry.css'))
+  configuration.add("stylesheet:tapestry.css",
+    StackExtension.stylesheet('${tapestry.asset.root}/tapestry.css'))
 }
 ```
