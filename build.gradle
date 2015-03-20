@@ -1,0 +1,44 @@
+description = "Warm up Tapestry's minification cache during application startup"
+
+group = "de.eddyson"
+version = "0.0.1-SNAPSHOT"
+
+apply plugin: 'groovy'
+apply plugin: 'maven'
+
+def versions= [
+  tapestry: '5.4-beta-26',
+  slf4j: '1.7.10',
+  
+  // test scopes
+  spock: '1.0-groovy-2.4'
+]
+
+repositories {
+  jcenter()
+}
+
+sourceCompatibility = '1.7'
+
+task sourceJar(type: Jar) {
+  dependsOn classes
+  classifier "sources"
+  from sourceSets.main.allSource
+}
+
+artifacts {
+  archives sourceJar
+}
+
+dependencies {
+  compile "org.slf4j:slf4j-api:$versions.slf4j"
+  compile "org.apache.tapestry:tapestry-core:$versions.tapestry"
+
+  compile "javax.servlet:servlet-api:2.5"
+  testCompile "org.spockframework:spock-tapestry:$versions.spock"
+  testRuntime "org.slf4j:slf4j-simple:$versions.slf4j"
+}
+
+jar {
+  manifest { attributes 'Tapestry-Module-Classes': 'de.eddyson.tapestry.minificationcachewarming.MinificationCacheWarmingModule' }
+}
