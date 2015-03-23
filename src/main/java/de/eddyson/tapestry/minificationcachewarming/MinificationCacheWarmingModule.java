@@ -3,12 +3,15 @@ package de.eddyson.tapestry.minificationcachewarming;
 import java.lang.reflect.Method;
 
 import org.apache.tapestry5.SymbolConstants;
+import org.apache.tapestry5.ioc.MappedConfiguration;
 import org.apache.tapestry5.ioc.MethodAdviceReceiver;
 import org.apache.tapestry5.ioc.OrderedConfiguration;
 import org.apache.tapestry5.ioc.ServiceBinder;
 import org.apache.tapestry5.ioc.annotations.Advise;
 import org.apache.tapestry5.ioc.annotations.Contribute;
 import org.apache.tapestry5.ioc.annotations.Symbol;
+import org.apache.tapestry5.ioc.services.FactoryDefaults;
+import org.apache.tapestry5.ioc.services.SymbolProvider;
 import org.apache.tapestry5.plastic.MethodAdvice;
 import org.apache.tapestry5.plastic.MethodInvocation;
 import org.apache.tapestry5.services.assets.ResourceMinimizer;
@@ -29,14 +32,21 @@ public final class MinificationCacheWarmingModule {
     binder.bind(MinificationCacheWarming.class, MinificationCacheWarmingImpl.class);
   }
 
+  @Contribute(SymbolProvider.class)
+  @FactoryDefaults
+  public static void addDefaultConfiguration(final MappedConfiguration<String, Object> configuration) {
+    configuration.add(MinificationCacheWarmingSymbols.ENABLE_MINIFICATION_CACHE_WARMING, "${"
+        + SymbolConstants.MINIFICATION_ENABLED + "}");
+    configuration.add(MinificationCacheWarmingSymbols.LOG_SLOW_MINIFICATION, Boolean.TRUE);
+  }
+
   @Contribute(Runnable.class)
-  public static void warmMinifiedJavascriptCache(final MinificationCacheWarming minificationCacheWarming,
-      @Symbol(SymbolConstants.MINIFICATION_ENABLED) final boolean minificationEnabled,
+  public static void warmMinifiedJavascriptCache(
+      final MinificationCacheWarming minificationCacheWarming,
+      @Symbol(MinificationCacheWarmingSymbols.ENABLE_MINIFICATION_CACHE_WARMING) final boolean minificationCacheWarmingEnabled,
       final OrderedConfiguration<Runnable> configuration) {
 
-    // TODO add separate symbol defaulting to
-    // SymbolConstants.MINIFICATION_ENABLED
-    if (minificationEnabled) {
+    if (minificationCacheWarmingEnabled) {
       configuration.add("MinificationCacheWarming", new Runnable() {
 
         @Override
@@ -53,30 +63,32 @@ public final class MinificationCacheWarmingModule {
   }
 
   @Advise(serviceInterface = ResourceMinimizer.class)
-  public static void logSlowMinification(final MethodAdviceReceiver adviceReceiver, final Logger logger)
+  public static void logSlowMinification(final MethodAdviceReceiver adviceReceiver, final Logger logger,
+      @Symbol(MinificationCacheWarmingSymbols.LOG_SLOW_MINIFICATION) final boolean logSlowMinification)
       throws NoSuchMethodException, SecurityException {
-    // TODO add symbol to toggle logging behavior
-    @SuppressWarnings("unchecked")
-    Method m = adviceReceiver.getInterface().getMethod("minimize", StreamableResource.class);
+    if (logSlowMinification) {
+      @SuppressWarnings("unchecked")
+      Method m = adviceReceiver.getInterface().getMethod("minimize", StreamableResource.class);
 
-    adviceReceiver.adviseMethod(m, new MethodAdvice() {
+      adviceReceiver.adviseMethod(m, new MethodAdvice() {
 
-      @Override
-      public void advise(final MethodInvocation invocation) {
+        @Override
+        public void advise(final MethodInvocation invocation) {
 
-        if (!startupComplete) {
-          invocation.proceed();
-        } else {
-          long start = System.currentTimeMillis();
-          invocation.proceed();
-          long end = System.currentTimeMillis();
-          if (end - start >= slowMinificationThresholdMillis) {
-            logger.warn("Minification of {} took {} ms, consider adding it to the cache warming process.",
-                invocation.getParameter(0), end - start);
+          if (!startupComplete) {
+            invocation.proceed();
+          } else {
+            long start = System.currentTimeMillis();
+            invocation.proceed();
+            long end = System.currentTimeMillis();
+            if (end - start >= slowMinificationThresholdMillis) {
+              logger.warn("Minification of {} took {} ms, consider adding it to the cache warming process.",
+                  invocation.getParameter(0), end - start);
+            }
           }
         }
-      }
-    });
+      });
+    }
   }
 
   private MinificationCacheWarmingModule() {
