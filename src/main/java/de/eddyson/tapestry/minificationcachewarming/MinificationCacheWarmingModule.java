@@ -46,9 +46,9 @@ public final class MinificationCacheWarmingModule {
           } catch (Exception e) {
             throw new RuntimeException("Error warming minification cache", e);
           }
+          startupComplete = true;
         }
       });
-      startupComplete = true;
     }
   }
 
