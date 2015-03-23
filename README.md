@@ -29,6 +29,6 @@ public static void configureMinificationCacheWarming(
   configuration.add("stack:core", StackExtension.stack("core"));
   configuration.add("module:bootstrap/modal", StackExtension.module("bootstrap/modal"));
   configuration.add("stylesheet:tapestry.css",
-    StackExtension.stylesheet('${tapestry.asset.root}/tapestry.css'));
+    StackExtension.stylesheet("${tapestry.asset.root}/tapestry.css"));
 }
 ```
