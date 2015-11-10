@@ -1,4 +1,6 @@
 # tapestry-minification-cache-warming [![Build Status](https://travis-ci.org/eddyson-de/tapestry-minification-cache-warming.svg?branch=master)](https://travis-ci.org/eddyson-de/tapestry-webjars)
+
+[![Join the chat at https://gitter.im/eddyson-de/tapestry-minification-cache-warming](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/eddyson-de/tapestry-minification-cache-warming?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Control which resources are pre-minified during the application's startup.
 
 Tapestry can minify resources like JavaScript modules and CSS stylesheets during runtime. This is done lazily when the resources are first requested. When the minification process becomes complex, this can take a considerable amount of time, slowing down the first requests' processing.
