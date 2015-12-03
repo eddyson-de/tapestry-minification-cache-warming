@@ -166,6 +166,8 @@ public class MinificationCacheWarmingImpl implements MinificationCacheWarming {
       try {
         // needed by JavaScriptStackMinimizeDisabler.getStreamableResource
         requestGlobals.storeRequestResponse(new NoOpRequest(), null);
+        // needed by ResponseCompressionAnalyzerImpl.isGZipSupported
+        requestGlobals.storeServletRequestResponse(new NoOpServletRequest(), null);
 
         javaScriptStackAssembler.assembleJavaScriptResourceForStack(stack, false,
             JavaScriptAggregationStrategy.COMBINE_AND_MINIMIZE);
