@@ -18,7 +18,7 @@ respositories {
 }
 
 dependencies {
-  compile 'de.eddyson:ttapestry-minification-cache-warming:0.0.1'
+  compile 'de.eddyson:tapestry-minification-cache-warming:0.0.3'
 }
 
 ```
