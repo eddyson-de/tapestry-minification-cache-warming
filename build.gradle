@@ -7,8 +7,8 @@ apply plugin: 'groovy'
 apply plugin: 'maven'
 
 def versions= [
-  tapestry: '5.4-beta-26',
-  slf4j: '1.7.10',
+  tapestry: '5.4-rc-1',
+  slf4j: '1.7.13',
   
   // test scopes
   spock: '1.0-groovy-2.4'
