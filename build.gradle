@@ -48,13 +48,15 @@ jar {
 }
 
 bintray {
-    user = project.properties.bintrayUser
-    key = project.properties.bintrayAPIKey
+    user = 'fooberger'
+    key = System.env.bintrayAPIKey
     configurations = ['archives']
     publish = true
     pkg {
         repo = 'maven'
         name = 'de.eddyson:tapestry-minification-cache-warming'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/eddyson-de/tapestry-minification-cache-warming'
     }
 }
 
