@@ -1,5 +1,5 @@
 plugins {
-    id "com.jfrog.bintray" version "1.5"
+    id "com.jfrog.bintray" version "1.7.3"
 }
 
 description = "Warm up Tapestry's minification cache during application startup"
@@ -11,8 +11,8 @@ apply plugin: 'groovy'
 apply plugin: 'maven'
 
 def versions= [
-  tapestry: '5.4-rc-1',
-  slf4j: '1.7.13',
+  tapestry: '5.4.1',
+  slf4j: '1.7.21',
   
   // test scopes
   spock: '1.0-groovy-2.4'
