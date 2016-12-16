@@ -12,7 +12,7 @@ apply plugin: 'maven'
 
 def versions= [
   tapestry: '5.4.1',
-  slf4j: '1.7.21',
+  slf4j: '1.7.22',
   
   // test scopes
   spock: '1.0-groovy-2.4'
