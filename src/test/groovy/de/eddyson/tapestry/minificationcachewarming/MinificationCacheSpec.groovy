@@ -25,7 +25,7 @@ import org.apache.tapestry5.services.javascript.StackExtension;
 import de.eddyson.tapestry.minificationcachewarming.MinificationCacheWarmingModule;
 import de.eddyson.tapestry.minificationcachewarming.services.MinificationCacheWarming;
 
-@SubModule([TapestryModule, TestModule, MinificationCacheWarmingModule])
+@SubModule([TapestryModule, MinificationCacheSpec.TestModule, MinificationCacheWarmingModule])
 class MinificationCacheSpec extends spock.lang.Specification {
 
  @Inject
