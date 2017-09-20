@@ -34,6 +34,7 @@ import org.apache.tapestry5.services.Session;
 import org.apache.tapestry5.services.assets.StreamableResourceProcessing;
 import org.apache.tapestry5.services.assets.StreamableResourceSource;
 import org.apache.tapestry5.services.javascript.JavaScriptAggregationStrategy;
+import org.apache.tapestry5.services.javascript.JavaScriptStackSource;
 import org.apache.tapestry5.services.javascript.ModuleManager;
 import org.apache.tapestry5.services.javascript.StackExtension;
 import org.slf4j.Logger;
@@ -58,7 +59,8 @@ public class MinificationCacheWarmingImpl implements MinificationCacheWarming {
       final StreamableResourceSource streamableResourceSource, final ResourceChangeTracker resourceChangeTracker,
       final JavaScriptStackAssembler javaScriptStackAssembler, final RequestGlobals requestGlobals,
       final LocalizationSetter localizationSetter, final ThreadLocale threadLocale,
-      final ParallelExecutor parallelExecutor, final Logger logger, final AssetSource assetSource) {
+      final ParallelExecutor parallelExecutor, final Logger logger, final AssetSource assetSource,
+      final JavaScriptStackSource javaScriptStackSource) {
     this.moduleManager = moduleManager;
     this.streamableResourceSource = streamableResourceSource;
     this.resourceChangeTracker = resourceChangeTracker;
@@ -85,6 +87,22 @@ public class MinificationCacheWarmingImpl implements MinificationCacheWarming {
         throw new UnsupportedOperationException("Unsupported stack extension type " + stackExtension.type);
       }
 
+    }
+    for (String stack: javaScriptStackSource.getStackNames()) {
+      for (String moduleName: javaScriptStackSource.getStack(stack).getModules()) {
+        if (modules.contains(moduleName)) {
+          if (stacks.contains(stack)) {
+            logger.warn("The minification cache warming configuration contains the module '{}' which is part of the "
+                + "'{}' stack. The module will probably never be loaded on its own, so this is unnecessary.",
+                moduleName, stack);
+          } else {
+            logger.warn("The minification cache warming configuration contains the module '{}' which is part of the "
+                + "'{}' stack, but does not contain the stack. The module will probably never be loaded on its own, "
+                + "so, for optimal performance, the stack should be added instead.", moduleName, stack);
+
+          }
+        }
+      }
     }
 
   }
