@@ -1,4 +1,4 @@
-# tapestry-minification-cache-warming [![Build Status](https://travis-ci.org/eddyson-de/tapestry-minification-cache-warming.svg?branch=master)](https://travis-ci.org/eddyson-de/tapestry-webjars)
+# tapestry-minification-cache-warming [![status](https://github.com/eddyson-de/tapestry-minification-cache-warming/actions/workflows/main.yml/badge.svg)](https://github.com/eddyson-de/tapestry-minification-cache-warming/actions/workflows/main.yml)
 
 [![Join the chat at https://gitter.im/eddyson-de/tapestry-minification-cache-warming](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/eddyson-de/tapestry-minification-cache-warming?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Control which resources are pre-minified during the application's startup.
@@ -14,11 +14,11 @@ A basic usage example to override Tapestry's shipped jQuery library with a newer
 ### `build.gradle`:
 ```groovy
 respositories {
-  jcenter()
+  maven { url "https://jitpack.io" }
 }
 
 dependencies {
-  compile 'de.eddyson:tapestry-minification-cache-warming:0.0.4'
+  implementation 'com.github.eddyson-de:tapestry-minification-cache-warming:0.5.0'
 }
 
 ```

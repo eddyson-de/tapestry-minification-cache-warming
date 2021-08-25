@@ -1,28 +1,18 @@
 plugins {
-    id "com.jfrog.bintray" version "1.7.3"
+  id "java"
+  id "groovy"
+  id "maven-publish"
 }
 
 description = "Warm up Tapestry's minification cache during application startup"
-
 group = "de.eddyson"
-version = "0.0.4"
-
-apply plugin: 'groovy'
-apply plugin: 'maven'
-
-def versions= [
-  tapestry: '5.4.3',
-  slf4j: '1.7.25',
-  
-  // test scopes
-  spock: '1.1-groovy-2.4'
-]
+version = "0.5.0"
 
 repositories {
-  jcenter()
+  mavenCentral()
 }
 
-sourceCompatibility = '1.7'
+sourceCompatibility = "11"
 
 task sourceJar(type: Jar) {
   dependsOn classes
@@ -30,33 +20,24 @@ task sourceJar(type: Jar) {
   from sourceSets.main.allSource
 }
 
-artifacts {
-  archives sourceJar
+publishing {
+  publications {
+    maven(MavenPublication) {
+      from components.java
+      artifact tasks.sourceJar
+    }
+  }
 }
 
 dependencies {
-  compile "org.slf4j:slf4j-api:$versions.slf4j"
-  compile "org.apache.tapestry:tapestry-core:$versions.tapestry"
+  implementation "org.slf4j:slf4j-api:1.7.32"
+  implementation "org.apache.tapestry:tapestry-core:5.7.3"
+  implementation "javax.servlet:javax.servlet-api:4.0.1"
 
-  compile "javax.servlet:servlet-api:2.5"
-  testCompile "org.spockframework:spock-tapestry:$versions.spock"
-  testRuntime "org.slf4j:slf4j-simple:$versions.slf4j"
+  testImplementation "org.apache.tapestry:tapestry-spock:5.7.3"
+  testRuntimeOnly "org.slf4j:slf4j-simple:1.7.32"
 }
 
 jar {
   manifest { attributes 'Tapestry-Module-Classes': 'de.eddyson.tapestry.minificationcachewarming.MinificationCacheWarmingModule' }
 }
-
-bintray {
-    user = 'fooberger'
-    key = System.env.bintrayAPIKey
-    configurations = ['archives']
-    publish = true
-    pkg {
-        repo = 'maven'
-        name = 'de.eddyson:tapestry-minification-cache-warming'
-        licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/eddyson-de/tapestry-minification-cache-warming'
-    }
-}
-
