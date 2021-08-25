@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -13,24 +15,32 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import javax.servlet.AsyncContext;
+import javax.servlet.DispatcherType;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpUpgradeHandler;
+import javax.servlet.http.Part;
 
+import org.apache.tapestry5.commons.Resource;
+import org.apache.tapestry5.http.services.Request;
+import org.apache.tapestry5.http.services.RequestGlobals;
+import org.apache.tapestry5.http.services.Session;
 import org.apache.tapestry5.internal.services.assets.JavaScriptStackAssembler;
 import org.apache.tapestry5.internal.services.assets.ResourceChangeTracker;
 import org.apache.tapestry5.ioc.Invokable;
-import org.apache.tapestry5.ioc.Resource;
-import org.apache.tapestry5.ioc.internal.util.CollectionFactory;
 import org.apache.tapestry5.ioc.services.ParallelExecutor;
 import org.apache.tapestry5.ioc.services.ThreadLocale;
 import org.apache.tapestry5.services.AssetSource;
 import org.apache.tapestry5.services.LocalizationSetter;
-import org.apache.tapestry5.services.Request;
-import org.apache.tapestry5.services.RequestGlobals;
-import org.apache.tapestry5.services.Session;
 import org.apache.tapestry5.services.assets.StreamableResourceProcessing;
 import org.apache.tapestry5.services.assets.StreamableResourceSource;
 import org.apache.tapestry5.services.javascript.JavaScriptAggregationStrategy;
@@ -41,9 +51,9 @@ import org.slf4j.Logger;
 
 public class MinificationCacheWarmingImpl implements MinificationCacheWarming {
 
-  private final List<String> modules = CollectionFactory.newList();
-  private final List<String> stacks = CollectionFactory.newList();
-  private final List<String> stylesheets = CollectionFactory.newList();
+  private final List<String> modules = new ArrayList<>();
+  private final List<String> stacks = new ArrayList<>();
+  private final List<String> stylesheets = new ArrayList<>();
   private final ModuleManager moduleManager;
   private final StreamableResourceSource streamableResourceSource;
   private final ResourceChangeTracker resourceChangeTracker;
@@ -109,7 +119,7 @@ public class MinificationCacheWarmingImpl implements MinificationCacheWarming {
 
   @Override
   public void warmMinificationCache() throws InterruptedException, ExecutionException {
-    List<Resource> resources = new ArrayList<Resource>(modules.size() + stylesheets.size());
+    List<Resource> resources = new ArrayList<>(modules.size() + stylesheets.size());
 
     for (String module : modules) {
       Resource resource = moduleManager.findResourceForModule(module);
@@ -122,7 +132,7 @@ public class MinificationCacheWarmingImpl implements MinificationCacheWarming {
       resources.add(assetSource.getExpandedAsset(stylesheet).getResource());
     }
 
-    Set<Future<?>> futures = CollectionFactory.newSet();
+    Set<Future<?>> futures = new HashSet<>();
 
     for (final Locale locale : localizationSetter.getSupportedLocales()) {
       for (final String stack : stacks) {
@@ -338,6 +348,11 @@ public class MinificationCacheWarmingImpl implements MinificationCacheWarming {
     }
 
     @Override
+    public long getContentLengthLong() {
+      return 0;
+    }
+
+    @Override
     public String getContentType() {
       return null;
     }
@@ -458,6 +473,41 @@ public class MinificationCacheWarmingImpl implements MinificationCacheWarming {
     }
 
     @Override
+    public ServletContext getServletContext() {
+      return null;
+    }
+
+    @Override
+    public AsyncContext startAsync() throws IllegalStateException {
+      return null;
+    }
+
+    @Override
+    public AsyncContext startAsync(ServletRequest servletRequest, ServletResponse servletResponse) throws IllegalStateException {
+      return null;
+    }
+
+    @Override
+    public boolean isAsyncStarted() {
+      return false;
+    }
+
+    @Override
+    public boolean isAsyncSupported() {
+      return false;
+    }
+
+    @Override
+    public AsyncContext getAsyncContext() {
+      return null;
+    }
+
+    @Override
+    public DispatcherType getDispatcherType() {
+      return null;
+    }
+
+    @Override
     public String getAuthType() {
       return null;
     }
@@ -563,6 +613,11 @@ public class MinificationCacheWarmingImpl implements MinificationCacheWarming {
     }
 
     @Override
+    public String changeSessionId() {
+      return null;
+    }
+
+    @Override
     public boolean isRequestedSessionIdValid() {
       return false;
     }
@@ -580,6 +635,36 @@ public class MinificationCacheWarmingImpl implements MinificationCacheWarming {
     @Override
     public boolean isRequestedSessionIdFromUrl() {
       return false;
+    }
+
+    @Override
+    public boolean authenticate(HttpServletResponse response) throws IOException, ServletException {
+      return false;
+    }
+
+    @Override
+    public void login(String username, String password) throws ServletException {
+
+    }
+
+    @Override
+    public void logout() throws ServletException {
+
+    }
+
+    @Override
+    public Collection<Part> getParts() throws IOException, ServletException {
+      return null;
+    }
+
+    @Override
+    public Part getPart(String name) throws IOException, ServletException {
+      return null;
+    }
+
+    @Override
+    public <T extends HttpUpgradeHandler> T upgrade(Class<T> handlerClass) throws IOException, ServletException {
+      return null;
     }
 
   }
