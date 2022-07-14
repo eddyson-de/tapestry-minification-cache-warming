@@ -12,7 +12,24 @@ repositories {
   mavenCentral()
 }
 
-sourceCompatibility = "11"
+dependencies {
+  implementation "org.slf4j:slf4j-api:1.7.36"
+  implementation "org.apache.tapestry:tapestry-core:5.8.2"
+  implementation "javax.servlet:javax.servlet-api:4.0.1"
+
+  testImplementation "org.spockframework:spock-core:2.1-groovy-3.0"
+  testImplementation "org.apache.tapestry:tapestry-spock:5.8.2"
+  testRuntimeOnly "org.slf4j:slf4j-simple:1.7.36"
+}
+
+java {
+  sourceCompatibility = JavaVersion.VERSION_11
+  targetCompatibility = JavaVersion.VERSION_11
+}
+
+test {
+  useJUnitPlatform()
+}
 
 task sourceJar(type: Jar) {
   dependsOn classes
@@ -27,15 +44,6 @@ publishing {
       artifact tasks.sourceJar
     }
   }
-}
-
-dependencies {
-  implementation "org.slf4j:slf4j-api:1.7.32"
-  implementation "org.apache.tapestry:tapestry-core:5.7.3"
-  implementation "javax.servlet:javax.servlet-api:4.0.1"
-
-  testImplementation "org.apache.tapestry:tapestry-spock:5.7.3"
-  testRuntimeOnly "org.slf4j:slf4j-simple:1.7.32"
 }
 
 jar {
