@@ -6,7 +6,7 @@ plugins {
 
 description = "Warm up Tapestry's minification cache during application startup"
 group = "de.eddyson"
-version = "0.1.0"
+version = "0.2.0"
 
 repositories {
   mavenCentral()

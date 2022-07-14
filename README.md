@@ -18,7 +18,7 @@ respositories {
 }
 
 dependencies {
-  implementation 'com.github.eddyson-de:tapestry-minification-cache-warming:0.1.0'
+  implementation 'com.github.eddyson-de:tapestry-minification-cache-warming:0.2.0'
 }
 
 ```
