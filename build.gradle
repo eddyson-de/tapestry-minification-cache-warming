@@ -6,42 +6,37 @@ plugins {
 
 description = "Warm up Tapestry's minification cache during application startup"
 group = "de.eddyson"
-version = "0.2.0"
+version = "0.3.0"
 
 repositories {
   mavenCentral()
 }
 
 dependencies {
-  implementation "org.slf4j:slf4j-api:1.7.36"
-  implementation "org.apache.tapestry:tapestry-core:5.8.2"
-  implementation "javax.servlet:javax.servlet-api:4.0.1"
+  implementation "org.slf4j:slf4j-api:2.0.17"
+  implementation "org.apache.tapestry:tapestry-core-jakarta:5.9.0"
+  implementation "jakarta.servlet:jakarta.servlet-api:6.1.0"
 
-  testImplementation "org.spockframework:spock-core:2.1-groovy-3.0"
-  testImplementation "org.apache.tapestry:tapestry-spock:5.8.2"
-  testRuntimeOnly "org.slf4j:slf4j-simple:1.7.36"
+  testImplementation "org.spockframework:spock-core:2.4-groovy-3.0"
+  testImplementation "org.apache.tapestry:tapestry-spock-jakarta:5.9.0"
+  testRuntimeOnly "org.slf4j:slf4j-simple:2.0.17"
 }
 
 java {
-  sourceCompatibility = JavaVersion.VERSION_11
-  targetCompatibility = JavaVersion.VERSION_11
+  sourceCompatibility = JavaVersion.VERSION_17
+  targetCompatibility = JavaVersion.VERSION_17
+  withSourcesJar()
 }
 
 test {
   useJUnitPlatform()
 }
 
-task sourceJar(type: Jar) {
-  dependsOn classes
-  classifier "sources"
-  from sourceSets.main.allSource
-}
-
 publishing {
   publications {
     maven(MavenPublication) {
       from components.java
-      artifact tasks.sourceJar
+      artifact tasks.sourcesJar
     }
   }
 }
