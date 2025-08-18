@@ -37,7 +37,6 @@ publishing {
   publications {
     maven(MavenPublication) {
       from components.java
-      artifact tasks.sourcesJar
     }
   }
 }
